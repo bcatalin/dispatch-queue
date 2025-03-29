@@ -1,6 +1,6 @@
 {
   "name": "@bcdme/dispatch-queue",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A simple and versatile queue",
   "main": "index.js",
   "scripts": {

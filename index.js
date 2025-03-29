@@ -8,7 +8,7 @@ const path = require('path');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 
-const MAX_RETRIES = 25;
+const MAX_RETRIES = 5;
 
 class SimpleQueue {
     constructor(name, persistenceInterval = 0, persistenceDirectory = 'queues', maxSize = 0) {
@@ -89,6 +89,11 @@ class SimpleQueue {
         if (this.processing) return;
         this.processing = true;
 
+        if (!this.handler && !this.webhookUrl) {
+            this.processing = false;
+            return;
+        }
+
         while (this.data.length > 0) {
             const item = this.getItem(true);
             const retries = item._retries || 0;
@@ -141,6 +146,7 @@ class SimpleQueue {
         item._retries = 0;
         this.data.push(item);
         this.eventEmitter.emit('itemAdded', item);
+        this.saveData();
         this.processQueue();
     }
 

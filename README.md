@@ -20,9 +20,9 @@ npm install dispatch-queue
 ## Usage
 
 ```js
-const { createQueue } = require('dispatch-queue');
+const { createQueue } = require('@bcdme/dispatch-queue');
 // 1. Create a queue
-const myQueue = createQueue('myQueue', 1000, 'queues', 100);
+const myQueue = createQueue('myQueue', 5000, 'queues', 100);
 
 // 2. Register a webhook
 myQueue.registerWebhook('https://example.com/webhook', 'API_KEY', 'POST');

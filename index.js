@@ -8,7 +8,7 @@ const path = require('path');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 
-const MAX_RETRIES = 5;
+const MAX_RETRIES = 25;
 
 class SimpleQueue {
     constructor(name, persistenceInterval = 0, persistenceDirectory = 'queues', maxSize = 0) {
@@ -61,8 +61,9 @@ class SimpleQueue {
     loadData() {
         if (fs.existsSync(this.persistenceFilename)) {
             try {
-                const data = fs.readFileSync(this.persistenceFilename, 'utf8');
-                this.data = JSON.parse(data);
+                const raw = fs.readFileSync(this.persistenceFilename, 'utf8');
+                const parsed = JSON.parse(raw);
+                this.data = parsed.map(item => ({ ...item, _retries: item._retries || 0 }));
                 if (this.maxSize > 0 && this.data.length > this.maxSize) {
                     this.data = this.data.slice(0, this.maxSize);
                 }
@@ -76,7 +77,8 @@ class SimpleQueue {
 
     saveData() {
         try {
-            const data = JSON.stringify(this.data);
+            const serializable = this.data.map(item => ({ ...item, _retries: item._retries || 0 }));
+            const data = JSON.stringify(serializable);
             fs.writeFileSync(this.persistenceFilename, data, 'utf8');
         } catch (error) {
             console.error(`Error saving data for queue ${this.name}: ${error.message}`);

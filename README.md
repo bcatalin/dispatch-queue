@@ -9,7 +9,7 @@ A versatile and persistent queueing mechanism for Node.js applications. Supports
 - 🕸️ **Webhook Support**: Send items to external APIs
 - ⚙️ **Handler Support**: Register local functions to process queue items
 - 🔂 **Retry Logic**: Configurable retry limit and exponential backoff
-- 🧠 **Internal Metadata**: `_retries` counter tracked but never sent externally
+
 
 ## Installation
 
